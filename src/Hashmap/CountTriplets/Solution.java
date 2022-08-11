@@ -9,6 +9,7 @@ import java.util.concurrent.*;
 import java.util.function.*;
 import java.util.regex.*;
 import java.util.stream.*;
+
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
@@ -16,61 +17,90 @@ public class Solution {
 
     // Complete the countTriplets function below.
     static long countTriplets(List<Long> arr, long r) {
-        HashMap<Long,Integer> hashmap = new HashMap<>();
-        for(long num:arr){
-            int value = hashmap.computeIfAbsent(num,key->0);
-            hashmap.put(num,value+1);
-        }
-        System.out.println(hashmap);
-        //System.out.println(hashmap.size());
-        Set<Long> set = hashmap.keySet();
-        ArrayList<Long> sortList = new ArrayList<>();
-        ArrayList<Integer> arrayList = new ArrayList<>();
-        for(Long l:set){
-            sortList.add(l);
-        }
-        Collections.sort(sortList,new LongComparator());
-        Iterator<Long> it = sortList.iterator();
-        while (it.hasNext()){
-            Long num = it.next();
-            System.out.println(num);
-            arrayList.add(hashmap.get(num));
-        }
-        int count = 0;
-        if(arrayList.size()<3) {
-            arrayList.add(1);
-            arrayList.add(1);
-        }
-        for(int i=0;i<arrayList.size()-2;i++){
 
-            int one =  arrayList.get(i);
-            int two =  arrayList.get(i+1);
-            int three =  arrayList.get(i+2);
-            count+= one * two * three;
+
+        if (r == 1) {
+            return CombinationFormula(Long.valueOf(arr.size()), Long.valueOf(3));
         }
 
+        long count = 0;
+        HashMap<Long, Long> hashmap = new HashMap<>();
+        int size = arr.size();
+        for (int i = size - 1; i > -1; i--) {
+            long positionNum = arr.get(i);
+            if(!checkPow(r,positionNum)){
+                continue;
+            }
+            long nextNumOne = positionNum * r;
+            long nextNumTwo = positionNum * r * r;
+
+            if (hashmap.containsKey(nextNumOne) && hashmap.containsKey(nextNumTwo)) {
+                long valueOne = hashmap.get(nextNumOne);
+                long valueTwo = hashmap.get(nextNumTwo);
+                count += valueOne * valueTwo;
+            }
+
+            long exists = hashmap.computeIfAbsent(positionNum, key -> Long.valueOf(0));
+            hashmap.put(positionNum, exists + 1);
+        }
+
+        //System.out.println(hashmap);
         return count;
     }
 
-    static class LongComparator implements Comparator<Long>
-    {
-        public int compare(Long a, Long b)
-        {
-            return Long.compare(a,b);
+    private static boolean checkPow(long r, long l) {
+        if (l == 1)
+            return true;
+        if (l == r)
+            return true;
+        if (l % r != 0)
+            return false;
+
+        Long d = l;
+
+        while (d != 1) {
+            if (d % r != 0)
+                return false;
+            d = d / r;
+            if (d - r == 0)
+                return true;
+            else if (d < r)
+                return false;
         }
+        return true;
     }
 
+    // math formula
+    private static Long CombinationFormula(Long n, Long k) {
+        Long a = Long.valueOf(1);
+        Long b = Long.valueOf(1);
+        if (k > n / 2) {
+            k = n - k;
+        }
+        for (int i = 1; i <= k; i++) {
+            a *= (n + 1 - i);
+            b *= i;
+        }
+        return a / b;
+    }
+
+
     public static void main(String[] args) throws IOException {
-        String A ="100 1";
-        String B= "1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1";
-        String[] nr =A.replaceAll("\\s+$", "").split(" ");
+
+        String path = Solution.class.getResource("fileIn").getPath();
+        File doc = new File(path);
+        Scanner sc = new Scanner(doc);
+
+        String A = sc.nextLine();
+        String B = sc.nextLine();
+        String[] nr = A.replaceAll("\\s+$", "").split(" ");
         int n = Integer.parseInt(nr[0]);
         long r = Long.parseLong(nr[1]);
         List<Long> arr = Stream.of(B.replaceAll("\\s+$", "").split(" "))
                 .map(Long::parseLong)
                 .collect(toList());
         long ans = countTriplets(arr, r);
-        System.out.println("ans="+ans);
+        System.out.println("ans=" + ans);
 
     }
 }

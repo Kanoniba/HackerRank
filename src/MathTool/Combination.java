@@ -6,34 +6,34 @@ import java.util.Scanner;
 public class Combination {
 
     public static void main(String[] args) {
-        Scanner in=new Scanner(System.in);
-        int n=in.nextInt();
-        int k=in.nextInt();
-        System.out.println(Combination(n,k));
+
+        Long n = Long.valueOf(100000 );
+        Long k = Long.valueOf(3);
+        // System.out.println(Combination(n,k));
         System.out.println(CombinationFormula(n, k));
     }
 
     // math formula
-    private static int CombinationFormula(int n, int k) {
-        int a=1,b=1;
-        if(k>n/2) {
-            k=n-k;
+    private static Long CombinationFormula(Long n, Long k) {
+        Long a = Long.valueOf(1);
+        Long b = Long.valueOf(1);
+        if (k > n / 2) {
+            k = n - k;
         }
-        for(int i=1;i<=k;i++) {
-            a*=(n+1-i);
-            b*=i;
+        for (int i = 1; i <= k; i++) {
+            a *= (n + 1 - i);
+            b *= i;
         }
-        return a/b;
+        return a / b;
     }
 
     // loop
-    private static int Combination(int n, int k) {
-        if(k==0||k==n)
-            return 1;
+    private static Long Combination(Long n, Long k) {
+        if (k == 0 || k == n)
+            return Long.valueOf(1);
         else
-            return Combination(n-1, k)+Combination(n-1, k-1);
+            return Combination(n - 1, k) + Combination(n - 1, k - 1);
     }
-
 
 
 }
