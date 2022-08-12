@@ -18,33 +18,52 @@ public class Solution {
     // Complete the countTriplets function below.
     static long countTriplets(List<Long> arr, long r) {
 
-
         if (r == 1) {
-            return CombinationFormula(Long.valueOf(arr.size()), Long.valueOf(3));
+            //   return CombinationFormula(Long.valueOf(arr.size()), Long.valueOf(3));
         }
 
         long count = 0;
         HashMap<Long, Long> hashmap = new HashMap<>();
+        HashMap<Long, Long> pairMap = new HashMap<>();
         int size = arr.size();
         for (int i = size - 1; i > -1; i--) {
             long positionNum = arr.get(i);
-            if(!checkPow(r,positionNum)){
-                continue;
-            }
-            long nextNumOne = positionNum * r;
-            long nextNumTwo = positionNum * r * r;
+//            if (!checkPow(r, positionNum)) {
+//                continue;
+//            }
 
-            if (hashmap.containsKey(nextNumOne) && hashmap.containsKey(nextNumTwo)) {
-                long valueOne = hashmap.get(nextNumOne);
-                long valueTwo = hashmap.get(nextNumTwo);
-                count += valueOne * valueTwo;
+            long nextNum = positionNum * r;
+
+            // count total
+            if (pairMap.containsKey(nextNum)) {
+                long value = pairMap.get(nextNum);
+                count += value;
             }
 
+            // maintain pair map
+            if (hashmap.containsKey(nextNum)) {
+                long valueNext = hashmap.get(nextNum);
+                long existPair = pairMap.computeIfAbsent(positionNum, key -> Long.valueOf(0));
+                pairMap.put(positionNum, existPair + valueNext);
+            }
+
+
+            // put hashmap
             long exists = hashmap.computeIfAbsent(positionNum, key -> Long.valueOf(0));
             hashmap.put(positionNum, exists + 1);
+
         }
 
-        //System.out.println(hashmap);
+//        System.out.println("!!!" + hashmap);
+//        final long[] total = {0};
+//        hashmap.forEach((k, v) -> {
+//                    System.out.println("key: " + k + " value:" + v);
+//                    total[0] += CombinationFormula(v, Long.valueOf(3));
+//                    System.out.println("com=" + CombinationFormula(v, Long.valueOf(3)) + " total:" + total[0]);
+//                }
+//        );
+
+
         return count;
     }
 
