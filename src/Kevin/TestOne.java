@@ -1,3 +1,5 @@
+package Kevin;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -7,8 +9,8 @@ public class TestOne {
         Integer[] points;
         int threshold;
 
-        threshold = 4;
-        points = new Integer[]{1, 2, 3, 5, 8};
+        threshold = 6;
+        points = new Integer[]{2, 2, 3, 4,1, 7,8,9};
         System.out.println(minNum(threshold, Arrays.asList(points)));
     }
 
